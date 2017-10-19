@@ -17,7 +17,7 @@ if (isset($_GET['source'])) {
   echo form_open('leaves/edit/' . $id, $attributes);
 } ?>
 <div class="row">
-  <div class="span8">
+  <div class="span6">
 <div class="row-fluid">
     <div class="span8">
 
@@ -76,26 +76,47 @@ if (isset($_GET['source'])) {
 
     <label for="cause"><?php echo lang('leaves_edit_field_cause');?></label>
     <textarea name="cause"><?php echo $leave['cause']; ?></textarea>
-
+    <br/>
+    <?php $style= "dropdown-rejected";
+    switch ($leave['status']) {
+        case LMS_PLANNED: $style= "dropdown-planned"; break;
+        case LMS_REQUESTED: $style= "dropdown-requested"; break;
+        case LMS_ACCEPTED: $style= "dropdown-accepted"; break;
+        default: $style= "dropdown-rejected"; break;
+    } ?>
+    <?php if ($is_hr) {?>
     <label for="status"><?php echo lang('leaves_edit_field_status');?></label>
-    <select name="status">
-        <option value="1" <?php if ($leave['status'] == 1) echo 'selected'; ?>><?php echo lang('Planned');?></option>
-        <option value="2" <?php if (($leave['status'] == 2) || $this->config->item('leave_status_requested')) echo 'selected'; ?>><?php echo lang('Requested');?></option>
-        <?php if ($is_hr) {?>
-        <option value="3" <?php if ($leave['status'] == 3) echo 'selected'; ?>><?php echo lang('Accepted');?></option>
-        <option value="4" <?php if ($leave['status'] == 4) echo 'selected'; ?>><?php echo lang('Rejected');?></option>
-        <?php } ?>
-    </select><br />
+    <select name="status" class="<?php echo $style; ?>">
+        <option value="1" <?php if ($leave['status'] == LMS_PLANNED) echo 'selected'; ?>><?php echo lang('Planned');?></option>
+        <option value="2" <?php if (($leave['status'] == LMS_REQUESTED) || $this->config->item('leave_status_requested')) echo 'selected'; ?>><?php echo lang('Requested');?></option>
+        <option value="3" <?php if ($leave['status'] == LMS_ACCEPTED) echo 'selected'; ?>><?php echo lang('Accepted');?></option>
+        <option value="4" <?php if ($leave['status'] == LMS_REJECTED) echo 'selected'; ?>><?php echo lang('Rejected');?></option>
+        <option value="5" <?php if ($leave['status'] == LMS_CANCELLATION) echo 'selected'; ?>><?php echo lang('Cancellation');?></option>
+        <option value="6" <?php if ($leave['status'] == LMS_CANCELED) echo 'selected'; ?>><?php echo lang('Canceled');?></option>
+    </select>
+    <?php } else { ?>
+    <label for="status"><?php echo lang('leaves_edit_field_status');?></label>
+    <select name="status" class="<?php echo $style; ?>">
+        <option value="1" <?php if ($leave['status'] == LMS_PLANNED) echo 'selected'; ?>><?php echo lang('Planned');?></option>
+        <option value="2" <?php if (($leave['status'] == LMS_REQUESTED) || $this->config->item('leave_status_requested')) echo 'selected'; ?>><?php echo lang('Requested');?></option>
+    </select>
+    <br/>
+    <button name="status" value="1" type="submit" class="btn btn-primary"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp; <?php echo lang('Planned');?></button>
+    &nbsp;&nbsp;
+    <button name="status" value="2" type="submit" class="btn btn-primary "><i class="icon-ok icon-white"></i>&nbsp; <?php echo lang('Requested');?></button>
+    <br/>
+    <?php } ?>
+    <br />
 
-    <button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i>&nbsp;<?php echo lang('leaves_edit_button_update');?></button>
-    &nbsp;
+    <?php if ($is_hr) {?>
+    <button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i>&nbsp;<?php echo lang('leaves_edit_button_update');?></button>&nbsp;
+    <?php } ?>
+    
     <?php if (isset($_GET['source'])) {?>
         <a href="<?php echo base_url() . $_GET['source']; ?>" class="btn btn-danger"><i class="icon-remove icon-white"></i>&nbsp;<?php echo lang('leaves_edit_button_cancel');?></a>
     <?php } else {?>
         <a href="<?php echo base_url(); ?>leaves" class="btn btn-danger"><i class="icon-remove icon-white"></i>&nbsp;<?php echo lang('leaves_edit_button_cancel');?></a>
     <?php } ?>
-
-<!-- </form> -->
 
     </div>
 
@@ -146,21 +167,10 @@ if (isset($_GET['source'])) {
   }
    ?>
    <?php
-   if($is_hr === TRUE){
-     /*
-   $attributes = array('id' => 'frmLeaveNewCommentForm');
-   if (isset($_GET['source'])) {
-       echo form_open('/comments/' . $leave['id'] . '?source=' . $_GET['source'], $attributes);
-   } else {
-       echo form_open('/comments/' . $leave['id'] . '?source=leaves/edit', $attributes);
-   }
-   */
-   ?>
+   if ($is_hr === TRUE) { ?>
    <label for="comment"><?php echo lang('leaves_comment_new_comment');?></label>
    <textarea name="comment" class="form-control" rows="5" style="min-width: 100%"></textarea>
-   <!-- <button type="submit" class="btn btn-primary"><i class="icon-comment icon-white"></i>&nbsp;<?php echo "Nouveau commentaire";?></button> -->
    &nbsp;
- <!-- </form> -->
  <?php }?>
 </div>
 </div>

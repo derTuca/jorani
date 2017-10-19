@@ -68,7 +68,7 @@ $route['users'] = 'users';
 //Human Resources Management
 $route['hr/employees'] = 'hr/employees';
 $route['hr/employees/entity/(:num)/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'hr/employeesOfEntity/$1/$2/$3/$4/$5/$6/$7';
-$route['hr/employees/export/(:num)/(:any)/(:any)'] = 'hr/exportEmployees/$1/$2/$3';
+$route['hr/employees/export/(:num)/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'hr/exportEmployees/$1/$2/$3/$4/$5/$6/$7';
 $route['hr/employees/edit/manager'] = 'hr/editManager';
 $route['hr/employees/edit/entity'] = 'hr/editEntity';
 $route['hr/employees/edit/contract'] = 'hr/editContract';
@@ -138,7 +138,6 @@ $route['organization/rename'] = 'organization/rename';
 $route['organization/move'] = 'organization/move';
 $route['organization/copy'] = 'organization/copy';
 $route['organization/employees'] = 'organization/employees';
-$route['organization/employeesDateHired'] = 'organization/employeesDateHired';
 $route['organization/addemployee'] = 'organization/addemployee';
 $route['organization/delemployee'] = 'organization/delemployee';
 $route['organization/getsupervisor'] = 'organization/getsupervisor';
@@ -190,16 +189,18 @@ $route['leaves/public/organization/(:num)'] = 'calendar/publicOrganization/$1';
 $route['contracts/public/calendar/alldayoffs'] = 'calendar/publicDayoffs';
 
 //_______________________________________________
-//My leave requests
+//Leave requests created by an employee
 $route['leaves/counters'] = 'leaves/counters';
 $route['leaves/counters/(:num)'] = 'leaves/counters/$1';
 $route['leaves/export'] = 'leaves/export';
 $route['leaves/create'] = 'leaves/create';
 $route['leaves/edit/(:num)'] = 'leaves/edit/$1';
 $route['leaves/request/(:num)'] = 'leaves/requestLeave/$1';
+$route['leaves/cancel/(:num)'] = 'leaves/cancel/$1';
 $route['leaves/update'] = 'leaves/update';
 $route['leaves/delete/(:num)'] = 'leaves/delete/$1';
 $route['leaves/(:num)/history'] = 'leaves/history/$1';
+$route['leaves/(:num)/comments/add'] = 'leaves/createComment/$1';
 $route['leaves/cancellation/(:num)'] = 'leaves/cancellation/$1';
 $route['leaves/reminder/(:num)'] = 'leaves/reminder/$1';
 $route['leaves/([^/]+)/(:num)'] = 'leaves/view/$1/$2';
@@ -264,7 +265,7 @@ $route['reports/leaves/export'] = 'reports/exportLeavesReport';
 $route['reports'] = 'reports';
 
 //_______________________________________________
-//REST API
+//HTTP API
 $route['api/token'] = 'api/token';
 $route['api/contracts/(:num)'] = 'api/contracts/$1';
 $route['api/contracts'] = 'api/contracts';
@@ -298,6 +299,14 @@ $route['api/rejectleaves/(:num)'] = 'api/rejectleaves/$1';
 $route['api/users/ext'] = 'api/usersExt';
 
 //_______________________________________________
+//REST API (for mobile/HTML Clients)
+$route['api/rest/leaves']['OPTIONS'] = 'rest/options';
+$route['api/rest/leaves']['GET'] = 'rest/leaves';
+
+$route['api/rest/contracts']['OPTIONS'] = 'rest/options';
+$route['api/rest/users']['OPTIONS'] = 'rest/options';
+
+//_______________________________________________
 //ICS Feeds
 $route['ics/individual/(:num)'] = 'ics/individual/$1';
 $route['ics/dayoffs/(:num)/(:num)'] = 'ics/dayoffs/$1/$2';
@@ -317,19 +326,6 @@ $route['api/acs'] = 'connection/acs';
 $route['api/slo'] = 'connection/slo';
 $route['api/sls'] = 'connection/sls';
 $route['api/sso'] = 'connection/sso';
-
-//_______________________________________________
-//Comments
-$route['comments/(:num)'] = 'leaves/createComment/$1';
-
-
-//_______________________________________________
-//Experimental mobile endpoint
-$route['mobile/getPublicKey'] = 'mobile/getPublicKey';
-$route['mobile/login'] = 'mobile/login';
-$route['mobile/logout'] = 'mobile/logout';
-$route['mobile/notifications'] = 'mobile/notifications';
-$route['mobile/leaves/(:num)'] = 'mobile/leaves/$1';
 
 //_______________________________________________
 //Authorization endpoint

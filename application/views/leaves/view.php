@@ -43,6 +43,7 @@ switch ($leave['status']) {
     case LMS_PLANNED: $style= "dropdown-planned"; break;
     case LMS_REQUESTED: $style= "dropdown-requested"; break;
     case LMS_ACCEPTED: $style= "dropdown-accepted"; break;
+    default: $style= "dropdown-rejected"; break;
 } ?>
     <label for="status"><?php echo lang('leaves_view_field_status');?></label>
     <select name="status" class="<?php echo $style; ?>" readonly>
@@ -118,9 +119,9 @@ switch ($leave['status']) {
    <?php
    $attributes = array('id' => 'frmLeaveNewCommentForm');
    if (isset($_GET['source'])) {
-       echo form_open('/comments/' . $leave['id'] . '?source=' . $_GET['source'], $attributes);
+       echo form_open('leaves/' . $leave['id'] . '/comments/add?source=' . $_GET['source'], $attributes);
    } else {
-       echo form_open('/comments/' . $leave['id'], $attributes);
+       echo form_open('leaves/' . $leave['id'] . '/comments/add', $attributes);
    }
    ?>
    <form method="post"

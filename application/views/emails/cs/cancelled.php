@@ -2,12 +2,12 @@
 /**
  * Email template.You can change the content of this template
  * @copyright  Copyright (c) 2014-2017 Benjamin BALET
- * @license    http://opensource.org/licenses/AGPL-3.0 AGPL-3.0
- * @link       https://github.com/bbalet/jorani
- * @since      0.6.1
+ * @license      http://opensource.org/licenses/AGPL-3.0 AGPL-3.0
+ * @link            https://github.com/bbalet/jorani
+ * @since         0.1.0
  */
 ?>
-<html lang="en">
+<html lang="cs">
     <head>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta charset="UTF-8">
@@ -20,9 +20,7 @@
     </head>
     <body>
         <h3>{Title}</h3>
-        Dear {Firstname} {Lastname}, <br />
-        <br />
-        <p>Your cancellation request was accepted and the leave request has been cancelled.</p>
+        {Firstname} {Lastname} cancelled a requested time off. See the <a href="{BaseUrl}leaves/leaves/{LeaveId}">details</a> below:<br />
         <table border="0">
             <tr>
                 <td>From &nbsp;</td><td>{StartDate}&nbsp;({StartDateType})</td>
@@ -34,12 +32,17 @@
                 <td>Type &nbsp;</td><td>{Type}</td>
             </tr>
             <tr>
-                <td>Reason &nbsp;</td><td>{Cause}</td>
+                <td>Duration &nbsp;</td><td>{Duration}</td>
             </tr>
             <tr>
-                <td>Comments &nbsp;</td><td>{Comments}</td>
+                <td>Balance &nbsp;</td><td>{Balance}</td>
+            </tr>
+            <tr>
+                <td>Reason &nbsp;</td><td>{Reason}</td>
             </tr>
         </table>
+        <br />
+        You can check the <a href="{BaseUrl}hr/counters/collaborators/{UserId}">leave balance</a> before validating the leave request.
         <hr>
         <h5>*** This is an automatically generated message, please do not reply to this message ***</h5>
     </body>

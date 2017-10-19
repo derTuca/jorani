@@ -296,7 +296,7 @@ class Leaves_model extends CI_Model {
                 $this->db->from('leaves');
                 $this->db->join('types', 'types.id = leaves.type');
                 $this->db->where('leaves.employee', $id);
-                $this->db->where('leaves.status', 3);
+                $this->db->where_in('leaves.status', array(LMS_ACCEPTED, LMS_CANCELLATION));
                 $this->db->where('leaves.startdate >= ', $entitlement['min_date']);
                 $this->db->where('leaves.enddate <=', $entitlement['max_date']);
                 $this->db->where('leaves.type', $entitlement['type_id']);
@@ -355,7 +355,7 @@ class Leaves_model extends CI_Model {
                 $this->db->from('leaves');
                 $this->db->join('types', 'types.id = leaves.type');
                 $this->db->where('leaves.employee', $id);
-                $this->db->where('leaves.status', 1);
+                $this->db->where('leaves.status', LMS_PLANNED);
                 $this->db->where('leaves.startdate >= ', $entitlement['min_date']);
                 $this->db->where('leaves.enddate <=', $entitlement['max_date']);
                 $this->db->where('leaves.type', $entitlement['type_id']);
@@ -379,7 +379,7 @@ class Leaves_model extends CI_Model {
                 $this->db->from('leaves');
                 $this->db->join('types', 'types.id = leaves.type');
                 $this->db->where('leaves.employee', $id);
-                $this->db->where('leaves.status', 2);
+                $this->db->where('leaves.status', LMS_REQUESTED);
                 $this->db->where('leaves.startdate >= ', $entitlement['min_date']);
                 $this->db->where('leaves.enddate <=', $entitlement['max_date']);
                 $this->db->where('leaves.type', $entitlement['type_id']);
@@ -604,7 +604,7 @@ class Leaves_model extends CI_Model {
      */
     public function updateLeaves($id) {
         $json = $this->prepareCommentOnStatusChanged($id, $this->input->post('status'));
-        if(! empty($this->input->post('comment'))){
+        if($this->input->post('comment') != NULL){
           $jsonDecode = json_decode($json);
           $comment_object = new stdClass;
           $comment_object->type = "comment";
@@ -820,7 +820,7 @@ class Leaves_model extends CI_Model {
     public function workmates($user_id, $start = "", $end = "") {
         $this->db->join('users', 'users.id = leaves.employee');
         $this->db->where('users.manager', $user_id);
-        $this->db->where('leaves.status != ', 4);       //Exclude rejected requests
+        $this->db->where('leaves.status < ', LMS_REJECTED);       //Exclude rejected requests
         $this->db->where('(leaves.startdate <= DATE(' . $this->db->escape($end) . ') AND leaves.enddate >= DATE(' . $this->db->escape($start) . '))');
         $this->db->order_by('startdate', 'desc');
         $this->db->limit(1024);  //Security limit
@@ -1406,7 +1406,8 @@ class Leaves_model extends CI_Model {
                         in_array("2", $statuses),
                         in_array("3", $statuses),
                         in_array("4", $statuses),
-                        in_array("5", $statuses));
+                        in_array("5", $statuses),
+                        in_array("6", $statuses));
             } else {
                 $tabular[$employee['id']] = $this->linear($employee['id'], $month, $year, TRUE, TRUE, TRUE, FALSE, TRUE);
             }
@@ -1545,8 +1546,8 @@ class Leaves_model extends CI_Model {
             //Hide forbidden entries in calendars
             if ($calendar) {
                 //Don't display rejected and cancel* leave requests for other employees
-                if (($entry->employee != $this->session->userdata('id')) ||
-                    ($entry->manager != $this->session->userdata('id')) ||
+                if (($entry->employee != $this->session->userdata('id')) &&
+                    ($entry->manager != $this->session->userdata('id')) &&
                         ($this->session->userdata('is_hr') === FALSE)) {
                     if ($entry->status > LMS_ACCEPTED) {
                         continue;
@@ -1809,6 +1810,7 @@ class Leaves_model extends CI_Model {
         if (isset($json_parsed)){
           array_push($json_parsed->comments, $comment_change);
         }else {
+          $json_parsed = new stdClass;
           $json_parsed->comments = array($comment_change);
         }
         return json_encode($json_parsed);
